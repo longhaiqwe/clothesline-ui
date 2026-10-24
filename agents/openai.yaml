@@ -1,0 +1,4 @@
+interface:
+  display_name: "Clothesline UI · 晾衣杆界面"
+  short_description: "用 SwiftUI 与 AppKit 构建可复用的 macOS 屏幕边缘晾衣杆挂卡界面"
+  default_prompt: "使用 $clothesline-ui 为我的 macOS 应用构建屏幕边缘挂卡界面。"
