@@ -5,6 +5,7 @@ struct ClotheslineView<Item: Identifiable, Card: View>: View where Item.ID == UU
     @ObservedObject var state: RailState
     let items: [Item]
     let title: (Item) -> String
+    var paperColor: (Item) -> Int = { _ in 0 }
     @ViewBuilder var card: (Item, Bool) -> Card
     private var ordered: [Item] { state.ordered(items) }
 
@@ -45,6 +46,7 @@ struct ClotheslineView<Item: Identifiable, Card: View>: View where Item.ID == UU
             }
             .background { RailBackdrop() }
         }
+        .modifier(RailAppearance(state: state))
         .coordinateSpace(name: "hangingRail")
         .onPreferenceChange(RailHitRects.self) { state.hitRects = $0 }
     }
@@ -55,7 +57,7 @@ struct ClotheslineView<Item: Identifiable, Card: View>: View where Item.ID == UU
         }
         ForEach(ordered) { item in
             HangingCard(state: state, id: item.id, title: title(item),
-                        shift: { state.shift(item.id, by: $0, among: ordered.map(\.id)) }) {
+                        shift: { state.shift(item.id, by: $0, among: ordered.map(\.id)) }, colorIndex: paperColor(item)) {
                 card(item, state.compact)
             }
         }
@@ -77,6 +79,11 @@ struct ClotheslineView<Item: Identifiable, Card: View>: View where Item.ID == UU
                 }
                 Toggle("锁定位置", isOn: $state.locked)
                 Toggle("迷你挂卡", isOn: $state.compact)
+                Picker("界面风格", selection: $state.style) {
+                    ForEach(RailStyle.allCases, id: \.rawValue) { style in
+                        Text(style.title).tag(style)
+                    }
+                }
             } label: { Image(systemName: "slider.horizontal.3") }
                 .menuStyle(.borderlessButton).fixedSize().help("位置与显示")
             Button { state.pinned.toggle() } label: {
@@ -88,7 +95,11 @@ struct ClotheslineView<Item: Identifiable, Card: View>: View where Item.ID == UU
         }
         .font(.system(size: 11)).buttonStyle(.plain)
         .padding(.horizontal, 12).padding(.vertical, 8)
-        .background(.regularMaterial, in: Capsule())
+        .background {
+            if state.style == .looseleaf {
+                Color.clear.modifier(RailPaperSurface(fill: RailPaper.canvas))
+            } else { Capsule().fill(.regularMaterial) }
+        }
         .railInteractive()
     }
 }
@@ -98,6 +109,7 @@ struct HangingCard<Content: View>: View {
     let id: UUID
     let title: String
     let shift: (Int) -> Void
+    var colorIndex: Int = 0
     @ViewBuilder var content: () -> Content
     @State private var hovered = false
     @State private var dragOffset = CGSize.zero
@@ -165,8 +177,7 @@ struct HangingCard<Content: View>: View {
     private var paper: some View {
         content()
             .frame(width: state.cardSize.width, height: state.cardSize.height)
-            .background(Color(nsColor: .controlBackgroundColor), in: RoundedRectangle(cornerRadius: 8))
             .clipShape(RoundedRectangle(cornerRadius: 8))
-            .shadow(color: .black.opacity(0.12), radius: 3, y: 2)
+            .modifier(RailPaperSurface(colorIndex: colorIndex))
     }
 }

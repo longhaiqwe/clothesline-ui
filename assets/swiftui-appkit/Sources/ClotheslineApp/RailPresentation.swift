@@ -14,17 +14,25 @@ struct RailGlass: NSViewRepresentable {
 }
 
 struct RailBackdrop: View {
+    @Environment(\.railStyle) private var style
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
     var body: some View {
+        Group {
+            if style == .looseleaf {
+                RailPaperShape().fill(RailPaper.sage)
+                    .overlay(RailPaperShape().stroke(RailPaper.ink, lineWidth: 1.6))
+            } else { systemBackdrop }
+        }
+        .padding(4).allowsHitTesting(false).accessibilityHidden(true)
+    }
+    private var systemBackdrop: some View {
         ZStack {
             if !reduceTransparency { RailGlass() }
             Color(nsColor: .windowBackgroundColor).opacity(reduceTransparency ? 1 : 0.55)
         }
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(.white.opacity(0.55), lineWidth: 1))
-        .padding(4)
-        .allowsHitTesting(false)
-        .accessibilityHidden(true)
+
     }
 }
 

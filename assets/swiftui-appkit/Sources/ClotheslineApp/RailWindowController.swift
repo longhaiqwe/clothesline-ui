@@ -181,7 +181,7 @@ final class RailWindowController: NSObject, NSMenuDelegate {
             detailWindow?.center()
         }
         detailWindow?.title = title
-        detailWindow?.contentView = NSHostingView(rootView: content())
+        detailWindow?.contentView = NSHostingView(rootView: content().modifier(RailAppearance(state: state, windowBackground: true)))
         detailWindow?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
@@ -212,6 +212,18 @@ final class RailWindowController: NSObject, NSMenuDelegate {
         let position = NSMenuItem(title: "屏幕边缘", action: nil, keyEquivalent: "")
         position.submenu = positions
         menu.addItem(position)
+        let styles = NSMenu()
+        styles.autoenablesItems = false
+        for style in RailStyle.allCases {
+            let item = NSMenuItem(title: style.title, action: #selector(changeStyle(_:)), keyEquivalent: "")
+            item.target = self
+            item.representedObject = style.rawValue
+            item.state = state.style == style ? .on : .off
+            styles.addItem(item)
+        }
+        let styleItem = NSMenuItem(title: "界面风格", action: nil, keyEquivalent: "")
+        styleItem.submenu = styles
+        menu.addItem(styleItem)
         menu.addItem(.separator())
         add("退出 \(title)", #selector(quit))
     }
@@ -223,6 +235,10 @@ final class RailWindowController: NSObject, NSMenuDelegate {
         guard !state.locked, let raw = sender.representedObject as? String, let edge = ScreenEdge(rawValue: raw) else { return }
         state.edge = edge
         state.reveal()
+    }
+    @objc private func changeStyle(_ sender: NSMenuItem) {
+        guard let raw = sender.representedObject as? String, let style = RailStyle(rawValue: raw) else { return }
+        state.style = style
     }
     @objc private func quit() { NSApp.terminate(nil) }
 }

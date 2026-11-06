@@ -4,6 +4,7 @@ enum DemoConfig {
     static let appName = "Clothesline Demo"
     static let bundleID = "local.clothesline.demo"
     // Choose a symbol for the product's purpose, independently of the clothesline decoration.
+    static let defaultStyle: RailStyle = .system
     static let menuSymbol = "square.stack"
 }
 

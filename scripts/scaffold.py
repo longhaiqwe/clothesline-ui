@@ -13,6 +13,7 @@ def main():
     parser.add_argument('--name', default='Clothesline Demo')
     parser.add_argument('--bundle-id', default='local.clothesline.demo')
     parser.add_argument('--symbol', default='square.stack')
+    parser.add_argument('--style', choices=['system', 'looseleaf'], default='system', help='Initial style; saved user preference takes priority')
     args = parser.parse_args()
     destination = args.destination.expanduser().absolute()
     if destination.exists():
@@ -37,6 +38,7 @@ def main():
             if line.startswith(f'    static let {key} = '):
                 lines[index] = f'    static let {key} = {swift_string(value)}'
     text = '\n'.join(lines) + '\n'
+    text = text.replace('static let defaultStyle: RailStyle = .system', f'static let defaultStyle: RailStyle = .{args.style}')
     config.write_text(text)
     settings = destination / 'app-config.json'
     settings.write_text(json.dumps({'name': args.name, 'bundle_id': args.bundle_id}, ensure_ascii=False, indent=2) + '\n')

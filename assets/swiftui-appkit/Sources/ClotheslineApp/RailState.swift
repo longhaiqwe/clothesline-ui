@@ -15,6 +15,9 @@ final class RailState: ObservableObject {
     @Published var edge: ScreenEdge {
         didSet { defaults.set(edge.rawValue, forKey: "rail.edge"); settingsChanged?() }
     }
+    @Published var style: RailStyle {
+        didSet { defaults.set(style.rawValue, forKey: RailStyle.defaultsKey) }
+    }
     @Published var compact: Bool {
         didSet { defaults.set(compact, forKey: "rail.compact"); settingsChanged?() }
     }
@@ -35,9 +38,10 @@ final class RailState: ObservableObject {
     var visibilityChanged: ((Bool) -> Void)?
     var dragWindow: ((CGSize, Bool) -> Void)?
 
-    init(defaults: UserDefaults, metrics: RailMetrics = RailMetrics()) {
+    init(defaults: UserDefaults, metrics: RailMetrics = RailMetrics(), defaultStyle: RailStyle = .system) {
         self.defaults = defaults
         self.metrics = metrics
+        style = defaults.string(forKey: RailStyle.defaultsKey).flatMap(RailStyle.init(rawValue:)) ?? defaultStyle
         edge = ScreenEdge(rawValue: defaults.string(forKey: "rail.edge") ?? "") ?? .top
         compact = defaults.bool(forKey: "rail.compact")
         locked = defaults.bool(forKey: "rail.locked")

@@ -5,10 +5,13 @@ permissions:
 jobs:
   test:
     runs-on: macos-14
+    strategy:
+      matrix:
+        style: [system, looseleaf]
     steps:
       - uses: actions/checkout@v4
       - name: Scaffold isolated project
-        run: python3 scripts/scaffold.py "$RUNNER_TEMP/ClotheslineCheck" --name "Clothesline Check" --bundle-id local.clothesline.ci
+        run: python3 scripts/scaffold.py "$RUNNER_TEMP/ClotheslineCheck" --name "Clothesline Check" --bundle-id local.clothesline.ci --style "${{ matrix.style }}"
       - name: Test
         run: swift test --package-path "$RUNNER_TEMP/ClotheslineCheck"
       - name: Build signed app

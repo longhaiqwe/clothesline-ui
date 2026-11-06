@@ -8,6 +8,7 @@
 | --- | --- |
 | `ScreenEdge.swift` | 边缘枚举、可见区域布局、物理边缘命中、跨菜单栏／Dock 的保活区域、悬停计时 |
 | `RailState.swift` | 显示状态、固定、位置锁定、尺寸、持久化顺序；不含业务数据 |
+| `RailStyle.swift` | 可选风格、纸面配色与描边、观察样式的窗口 modifier |
 | `RailPresentation.swift` | 系统材质、点击命中区域、摆动与减少动态效果支持 |
 | `RailDecoration.swift` | 四方向绳子和木夹；可替换装饰 |
 | `ClotheslineView.swift` | 泛型容器、固定尺寸滚动、控制栏、通用 `HangingCard` |
@@ -19,7 +20,7 @@
 
 ## 接入已有工程
 
-复制前检查现有类型名，避免 `ScreenEdge`、`RailState` 等冲突。复制七个通用源文件：ScreenEdge、RailState、RailPresentation、RailDecoration、ClotheslineView、RailWindowController、FileDropHostingView。排除示例 Demo、Main 和 PreviewRenderer。
+复制前检查现有类型名，避免 `ScreenEdge`、`RailState` 等冲突。复制八个通用源文件：ScreenEdge、RailState、RailStyle、RailPresentation、RailDecoration、ClotheslineView、RailWindowController、FileDropHostingView。排除示例 Demo、Main 和 PreviewRenderer。
 
 在现有 AppDelegate 中强持有控制器，启动时创建，退出时调用 `stop()`。若应用已有菜单栏入口，可以从控制器中移除 `statusItem` 相关代码，将 reveal/hide、固定和位置动作接到原菜单。不要创建第二套应用入口或重复状态栏图标。
 
@@ -50,7 +51,7 @@ let controller = RailWindowController(state: state, title: "任务晾台", symbo
 
 默认标准卡 264×220、迷你卡 224×156；竖向面板宽度为卡宽＋72，横向高度为卡高＋102。夹子额外占 18 点，控制条预留约 50～56 点。数值是起点，可以用 `RailMetrics(standard:compact:spacing:)` 覆盖。
 
-每张卡片都得到固定尺寸，不依赖内容把视口撑大。长文本截断并通过详情展开；大字体或较复杂内容要增加尺寸。`card` 闭包第二参数为 compact。不要固定 `.environment(\.colorScheme, .light)` 后假定系统深色仍然正确。
+每张卡片都得到固定尺寸，不依赖内容把视口撑大。长文本截断并通过详情展开；大字体或较复杂内容要增加尺寸。`card` 闭包第二参数为 compact。系统材质保持深浅色适配；手绘纸张明确采用固定浅色方案，详见 [风格接入](styles.md)。
 
 排序是相邻换位：沿主轴拖动夹子超过卡片尺寸的 35% 即前移／后移一位。业务数据不写入 RailState；这里只保存 UUID 顺序。新记录追加到已知记录后面，已删除记录不显示。UUID 必须唯一。
 

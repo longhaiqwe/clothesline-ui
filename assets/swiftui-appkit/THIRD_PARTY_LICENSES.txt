@@ -24,3 +24,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+Hand-drawn paper style adapted from the user's IdeaLine 1.4.0 SwiftUI implementation.
+Visual reference: Looseleaf (https://kevintngo.github.io/looseleaf/).
+No Looseleaf source code, fonts, images or other assets are bundled.

@@ -1,6 +1,6 @@
 ---
 name: clothesline-ui
-description: 使用 SwiftUI＋AppKit 构建或改造 macOS 屏幕边缘晾衣杆、挂卡、悬停展开界面。提供可运行模板、通用挂卡组件、四边吸附、固定、排序与菜单栏入口。适用于用户明确要求晾衣杆式呈现，或已有此类原生界面的复用；普通仪表盘和网页布局不默认采用此模式。
+description: 使用 SwiftUI＋AppKit 构建或改造 macOS 屏幕边缘晾衣杆、挂卡、悬停展开界面。提供可运行模板、通用挂卡组件、四边吸附、固定、排序、系统材质与手绘纸张可选风格及菜单栏入口。适用于用户明确要求晾衣杆式呈现，或已有此类原生界面的复用；普通仪表盘和网页布局不默认采用此模式。
 ---
 
 # Clothesline UI · 晾衣杆界面
@@ -14,6 +14,7 @@ description: 使用 SwiftUI＋AppKit 构建或改造 macOS 屏幕边缘晾衣杆
 - **新应用**：执行下方脚手架命令，再读 [references/integration.md](references/integration.md) 接入业务数据。
 - **已有 SwiftUI＋AppKit 应用**：先读 integration.md 的“接入已有工程”，只移植所需组件，不覆盖入口、业务模型或用户配置。
 - **修改布局、窗口或交互**：读 [references/interaction.md](references/interaction.md)，保留已经验证的坐标、悬停和窗口层级约束。
+- **选择手绘纸张或接入风格切换**：读 [references/styles.md](references/styles.md)，复用 `RailStyle.swift`，并保留系统材质选项。
 - **来源与验证范围**：见 [references/provenance.md](references/provenance.md)。模板只依赖本技能自带文件，不依赖来源项目路径。
 
 将 `<skill-dir>` 替换为当前 SKILL.md 所在目录。目标目录必须不存在：
@@ -25,6 +26,8 @@ cd '/absolute/path/NewApp'
 swift test
 python3 scripts/build_app.py
 ```
+
+可在脚手架命令后加 `--style looseleaf`，将新项目的初始风格设为手绘纸张；省略时使用 `system`。已有用户保存的选择优先。
 
 脚本只生成新目录；构建脚本在该项目的 `dist/` 下生成本地 ad-hoc 签名应用，不自动安装或启动。Swift target 与二进制名称固定为 `ClotheslineApp`，产品显示名和 bundle ID 可配置。
 
@@ -45,7 +48,7 @@ python3 scripts/build_app.py
 - 固定展开与锁定位置独立；用户明确收起时解除固定。系统菜单提供非拖拽的位置切换。
 - 拖动绳子或移动手柄改变位置，松手吸附最近边缘；拖动夹子调整顺序，避免抢占卡片内部按钮和滚动。
 - 每张卡提供 VoiceOver“前移／后移”；减少动态效果时停用摆动和排序弹簧，减少透明度时使用实色。
-- 图标使用 macOS template image 自动适配颜色；界面默认跟随系统外观。产品可明确选择纸张主题，但应同时确定文字与对比度。
+- 图标使用 macOS template image 自动适配颜色；系统材质默认跟随系统外观；手绘纸张明确使用浅色纸面和深色文字，系统深色时也保持此配色。业务卡片避免覆盖该配色造成低对比度。
 - 打开详情不能被高层级挂卡遮住。模板采用“收起挂卡并解除固定后打开详情”；如产品需要保留固定，按 interaction.md 调整详情层级。
 
 ## 验证与交付
@@ -56,7 +59,7 @@ python3 scripts/build_app.py
 swift run ClotheslineApp --preview-directory /absolute/path/previews
 ```
 
-这个命令渲染真实组件的四边 × 标准／迷你 × 深浅色共 16 张 PNG，使用隔离偏好、不启动常驻菜单栏程序。检查内容、夹子、操作栏和滚动区域是否裁切。手动验证悬停、固定、菜单、拖动、详情和重启；修改多屏行为时验证跨屏与断屏回退。区分已运行检查和未覆盖场景，不将截图验证描述为完整实机验证。
+这个命令渲染真实组件的两种风格 × 四边 × 标准／迷你 × 系统深浅色共 32 张 PNG，使用隔离偏好、不启动常驻菜单栏程序。检查内容、夹子、操作栏和滚动区域是否裁切。手动验证悬停、固定、菜单、拖动、详情和重启；修改多屏行为时验证跨屏与断屏回退。区分已运行检查和未覆盖场景，不将截图验证描述为完整实机验证。
 
 保留模板的 `THIRD_PARTY_LICENSES.txt`，不要在移植装饰代码时丢失原始授权。
 

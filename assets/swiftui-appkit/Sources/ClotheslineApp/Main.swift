@@ -10,9 +10,9 @@ final class DemoAppDelegate: NSObject, NSApplicationDelegate {
         let defaults = Bundle.main.bundleIdentifier == nil
             ? UserDefaults(suiteName: DemoConfig.bundleID + ".development") ?? .standard
             : .standard
-        let state = RailState(defaults: defaults)
+        let state = RailState(defaults: defaults, defaultStyle: DemoConfig.defaultStyle)
         rail = RailWindowController(state: state, title: DemoConfig.appName, symbol: DemoConfig.menuSymbol) {
-            ClotheslineView(state: state, items: DemoItem.samples, title: { $0.title }) { item, compact in
+            ClotheslineView(state: state, items: DemoItem.samples, title: { $0.title }, paperColor: { Int($0.id.uuid.15) - 1 }) { item, compact in
                 DemoCard(item: item, compact: compact) { [weak self] in
                     self?.rail?.showDetail(title: item.title) {
                         VStack(alignment: .leading, spacing: 20) {
