@@ -8,14 +8,24 @@ enum RailStyle: String, CaseIterable {
 }
 
 enum RailPaper {
-    static let ink = Color(red: 0.20, green: 0.23, blue: 0.20)
-    static let canvas = Color(red: 0.97, green: 0.95, blue: 0.89)
-    static let sage = Color(red: 0.62, green: 0.72, blue: 0.68)
-    static func color(_ index: Int) -> Color {
-        let colors = [Color(red: 0.96, green: 0.86, blue: 0.58),
-                      Color(red: 0.76, green: 0.84, blue: 0.72),
-                      Color(red: 0.75, green: 0.84, blue: 0.88),
-                      Color(red: 0.93, green: 0.75, blue: 0.67)]
+    // Looseleaf Notebook palette: https://kevintngo.github.io/looseleaf/#/foundations/theming
+    static let ink = Color(red: 42 / 255.0, green: 36 / 255.0, blue: 32 / 255.0) // #2A2420
+    static let inkMuted = Color(red: 74 / 255.0, green: 67 / 255.0, blue: 60 / 255.0) // --ll-ink-muted #4A433C
+    static let sheet = Color(red: 248 / 255.0, green: 245 / 255.0, blue: 238 / 255.0) // --ll-paper #F8F5EE
+    static let canvas = sheet
+    static let slip = Color(red: 251 / 255.0, green: 248 / 255.0, blue: 241 / 255.0) // --ll-slip #FBF8F1
+    static let backdrop = Color(red: 168 / 255.0, green: 200 / 255.0, blue: 187 / 255.0) // --ll-desk #A8C8BB
+    static let shadow = Color(red: 58 / 255.0, green: 44 / 255.0, blue: 30 / 255.0) // --ll-shade #3A2C1E
+    static let marker = Color(red: 223 / 255.0, green: 107 / 255.0, blue: 60 / 255.0) // --ll-marker #DF6B3C
+    static let sage = backdrop // Compatibility alias for existing custom fills.
+    static func color(_ index: Int?) -> Color {
+        guard let index else { return sheet }
+        // Explicit opt-in stock; yellow stays official, green/blue/pink use lighter 200 tints.
+        // Refactoring UI palette: official base, --cap 0 --strength 0; preserve hue.
+        let colors = [Color(red: 247 / 255.0, green: 227 / 255.0, blue: 138 / 255.0), // #F7E38A
+                      Color(red: 236 / 255.0, green: 245 / 255.0, blue: 221 / 255.0), // #ECF5DD
+                      Color(red: 226 / 255.0, green: 238 / 255.0, blue: 248 / 255.0), // #E2EEF8
+                      Color(red: 251 / 255.0, green: 225 / 255.0, blue: 222 / 255.0)] // #FBE1DE
         return colors[max(0, min(index, colors.count - 1))]
     }
 }
@@ -38,7 +48,11 @@ struct RailAppearance: ViewModifier {
         content
             .background {
                 if windowBackground {
-                    state.style == .looseleaf ? RailPaper.canvas : Color(nsColor: .windowBackgroundColor)
+                    if state.style == .looseleaf {
+                        RailPaper.canvas.overlay { RailPaperTexture() }
+                    } else {
+                        Color(nsColor: .windowBackgroundColor)
+                    }
                 }
             }
             .environment(\.railStyle, state.style)
@@ -70,16 +84,18 @@ struct RailPaperShape: Shape {
 /// Apply after sizing/padding. Background changes do not rebuild interactive content.
 struct RailPaperSurface: ViewModifier {
     @Environment(\.railStyle) private var style
-    var colorIndex: Int = 0
+    var colorIndex: Int? = nil
     var fill: Color? = nil
     var radius: CGFloat = 8
     var raised = true
+    var stock: RailPaperStock = .paper
     func body(content: Content) -> some View {
         content.background {
             if style == .looseleaf {
                 ZStack {
-                    if raised { RailPaperShape().fill(RailPaper.ink).offset(x: 3, y: 4) }
+                    if raised { RailPaperShape().fill(RailPaper.shadow).offset(x: 3, y: 4) }
                     RailPaperShape().fill(fill ?? RailPaper.color(colorIndex))
+                    RailPaperTexture(stock: stock).clipShape(RailPaperShape())
                     RailPaperShape().stroke(RailPaper.ink, style: StrokeStyle(lineWidth: 1.6, lineCap: .round, lineJoin: .round))
                 }
             } else {

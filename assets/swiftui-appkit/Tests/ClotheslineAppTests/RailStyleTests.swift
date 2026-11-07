@@ -2,6 +2,15 @@ import XCTest
 @testable import ClotheslineApp
 
 final class RailStyleTests: XCTestCase {
+    func testBundledPaperTexturesDecodeAtOriginalResolution() {
+        let expected = ["relief": 384, "slip": 256, "fibre": 480, "cloud": 240]
+        XCTAssertEqual(Set(RailPaperTexture.tiles.keys), Set(expected.keys))
+        for (name, pixels) in expected {
+            XCTAssertEqual(RailPaperTexture.tiles[name]?.image.width, pixels, name)
+            XCTAssertEqual(RailPaperTexture.tiles[name]?.image.height, pixels, name)
+        }
+    }
+
     @MainActor
     func testDefaultsAndUnknownStyleFallback() {
         let suite = "clothesline.style.\(UUID())"

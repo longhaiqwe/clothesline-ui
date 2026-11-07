@@ -5,7 +5,7 @@ struct ClotheslineView<Item: Identifiable, Card: View>: View where Item.ID == UU
     @ObservedObject var state: RailState
     let items: [Item]
     let title: (Item) -> String
-    var paperColor: (Item) -> Int = { _ in 0 }
+    var paperColor: (Item) -> Int? = { _ in nil }
     @ViewBuilder var card: (Item, Bool) -> Card
     private var ordered: [Item] { state.ordered(items) }
 
@@ -97,7 +97,7 @@ struct ClotheslineView<Item: Identifiable, Card: View>: View where Item.ID == UU
         .padding(.horizontal, 12).padding(.vertical, 8)
         .background {
             if state.style == .looseleaf {
-                Color.clear.modifier(RailPaperSurface(fill: RailPaper.canvas))
+                Color.clear.modifier(RailPaperSurface(fill: RailPaper.slip, stock: .slip))
             } else { Capsule().fill(.regularMaterial) }
         }
         .railInteractive()
@@ -109,7 +109,7 @@ struct HangingCard<Content: View>: View {
     let id: UUID
     let title: String
     let shift: (Int) -> Void
-    var colorIndex: Int = 0
+    var colorIndex: Int? = nil
     @ViewBuilder var content: () -> Content
     @State private var hovered = false
     @State private var dragOffset = CGSize.zero

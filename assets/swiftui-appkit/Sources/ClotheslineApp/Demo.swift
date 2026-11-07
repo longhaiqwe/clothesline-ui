@@ -25,13 +25,15 @@ struct DemoItem: Identifiable {
 }
 
 struct DemoCard: View {
+    @Environment(\.railStyle) private var style
     let item: DemoItem
     let compact: Bool
     var open: () -> Void
     @State private var completed = false
     var body: some View {
         VStack(alignment: .leading, spacing: compact ? 8 : 12) {
-            Text(item.subtitle).font(.caption).foregroundStyle(.secondary)
+            Text(item.subtitle).font(.caption)
+                .foregroundStyle(style == .looseleaf ? RailPaper.inkMuted : Color.secondary)
             Text(item.title).font(.headline)
             switch item.kind {
             case .status:

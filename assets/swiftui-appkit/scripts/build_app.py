@@ -21,6 +21,8 @@ macos.mkdir(parents=True, exist_ok=True)
 shutil.copy2(Path(bin_path) / 'ClotheslineApp', macos / 'ClotheslineApp')
 resources = app / 'Contents' / 'Resources'
 resources.mkdir(parents=True, exist_ok=True)
+for bundle in Path(bin_path).glob('*.bundle'):
+    shutil.copytree(bundle, resources / bundle.name, dirs_exist_ok=True)
 for license_name in ['LICENSE', 'THIRD_PARTY_LICENSES.txt']:
     license_file = root / license_name
     if license_file.exists(): shutil.copy2(license_file, resources / license_file.name)

@@ -41,7 +41,7 @@
 
 ## 手绘纸张风格复用（2026-11-06）
 
-从用户的 IdeaLine 1.4.0 提取固定曲线纸面、纯色配色、深色描边和偏移阴影，整理为独立 `RailStyle.swift`。视觉参考 Looseleaf；未复制其源代码、字体、图片或 React 组件。模板继续使用原有 RailState、四边布局、菜单和业务内容接口；保留系统材质为默认风格。
+从用户的 IdeaLine 1.4.0 提取固定曲线纸面、纯色配色、深色描边和偏移阴影，整理为独立 `RailStyle.swift`。当时仅视觉参考 Looseleaf，未复制其源代码、字体、图片或 React 组件；2026-11-07 的纸纹资源变更见下文。模板继续使用原有 RailState、四边布局、菜单和业务内容接口；保留系统材质为默认风格。
 
 本次本机验证：
 
@@ -51,3 +51,11 @@
 - 技能 frontmatter 与引用检查通过，脚手架默认选项及非法风格参数检查通过。
 
 本次未手动回放新模板的菜单切换、编辑中切换、拖动和多屏行为。来源产品的实测不能代替模板接入后的完整交互验证。
+
+## 官方纸纹资源（2026-11-07）
+
+从 [Looseleaf 固定提交 4bdb647](https://github.com/kevintngo/looseleaf/blob/4bdb647940e2fefb3cebb394f3bad25c766a27d2/src/lib/ink/textures-paper.generated.ts) 解码原始 relief、slip、fibre、cloud PNG，原始字节未做修改，总计 71,887 字节。依据该版本 `textures.ts` 的顺序与平铺尺寸，用 SwiftUI Canvas 实现纸面层叠。资源随模板和打包应用分发，保留 Looseleaf contributors 的完整 MIT 授权；没有引入 React 或网页运行时。
+
+之前“不包含 Looseleaf 图片或素材”的说明适用于 2026-11-06 版本；当前模板已包含上述四张纹理，授权说明与接入文档已同步更新。
+
+本次验证：15 项 XCTest 通过（含四张纹理的资源解码和原始像素尺寸检查），Release 构建与签名校验通过。临时移开生成工程的 `.build` 后，打包应用仍独立生成 32 张预览；已检查标准横向及迷你竖向的纸纹与文字。未重新回放菜单、拖动或多屏交互。

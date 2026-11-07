@@ -19,7 +19,7 @@ enum PreviewRenderer {
                         state.compact = compact
                         let size = edge.vertical ? CGSize(width: state.cardSize.width + 72, height: 800)
                             : CGSize(width: 1100, height: state.cardSize.height + 102)
-                        let root = ClotheslineView(state: state, items: DemoItem.samples, title: { $0.title }, paperColor: { Int($0.id.uuid.15) - 1 }) {
+                        let root = ClotheslineView(state: state, items: DemoItem.samples, title: { $0.title }) {
                             DemoCard(item: $0, compact: $1, open: {})
                         }.environment(\.colorScheme, dark ? .dark : .light)
                         let host = NSHostingView(rootView: root)

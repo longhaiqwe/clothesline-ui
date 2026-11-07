@@ -14,7 +14,7 @@ description: 使用 SwiftUI＋AppKit 构建或改造 macOS 屏幕边缘晾衣杆
 - **新应用**：执行下方脚手架命令，再读 [references/integration.md](references/integration.md) 接入业务数据。
 - **已有 SwiftUI＋AppKit 应用**：先读 integration.md 的“接入已有工程”，只移植所需组件，不覆盖入口、业务模型或用户配置。
 - **修改布局、窗口或交互**：读 [references/interaction.md](references/interaction.md)，保留已经验证的坐标、悬停和窗口层级约束。
-- **选择手绘纸张或接入风格切换**：读 [references/styles.md](references/styles.md)，复用 `RailStyle.swift`，并保留系统材质选项。
+- **选择手绘纸张或接入风格切换**：读 [references/styles.md](references/styles.md)，复用 `RailStyle.swift`、`RailPaperTexture.swift` 及自带 `Resources/Paper` 纸纹，按 Looseleaf 官方 Notebook 配置使用暖米白纸面 `sheet`（`#F8F5EE`）与桌面背景 `backdrop`（`#A8C8BB`），颜色按用途映射，不从截图重新取样；纸面叠加原尺寸纹理，不以纯色卡片代替；保留系统材质选项。
 - **来源与验证范围**：见 [references/provenance.md](references/provenance.md)。模板只依赖本技能自带文件，不依赖来源项目路径。
 
 将 `<skill-dir>` 替换为当前 SKILL.md 所在目录。目标目录必须不存在：

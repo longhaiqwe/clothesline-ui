@@ -19,7 +19,7 @@ struct RailBackdrop: View {
     var body: some View {
         Group {
             if style == .looseleaf {
-                RailPaperShape().fill(RailPaper.sage)
+                RailPaperShape().fill(RailPaper.backdrop)
                     .overlay(RailPaperShape().stroke(RailPaper.ink, lineWidth: 1.6))
             } else { systemBackdrop }
         }

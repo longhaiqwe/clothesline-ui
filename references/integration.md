@@ -9,6 +9,7 @@
 | `ScreenEdge.swift` | 边缘枚举、可见区域布局、物理边缘命中、跨菜单栏／Dock 的保活区域、悬停计时 |
 | `RailState.swift` | 显示状态、固定、位置锁定、尺寸、持久化顺序；不含业务数据 |
 | `RailStyle.swift` | 可选风格、纸面配色与描边、观察样式的窗口 modifier |
+| `RailPaperTexture.swift`、`Resources/Paper` | 官方纸纹分层平铺与本地资源；同时移植资源声明和打包复制逻辑 |
 | `RailPresentation.swift` | 系统材质、点击命中区域、摆动与减少动态效果支持 |
 | `RailDecoration.swift` | 四方向绳子和木夹；可替换装饰 |
 | `ClotheslineView.swift` | 泛型容器、固定尺寸滚动、控制栏、通用 `HangingCard` |

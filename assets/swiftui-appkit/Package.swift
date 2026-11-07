@@ -5,7 +5,7 @@ let package = Package(
     platforms: [.macOS(.v14)],
     products: [.executable(name: "ClotheslineApp", targets: ["ClotheslineApp"])],
     targets: [
-        .executableTarget(name: "ClotheslineApp"),
+        .executableTarget(name: "ClotheslineApp", resources: [.copy("Resources/Paper")]),
         .testTarget(name: "ClotheslineAppTests", dependencies: ["ClotheslineApp"])
     ]
 )
